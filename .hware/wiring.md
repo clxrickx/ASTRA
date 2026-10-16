@@ -1,4 +1,5 @@
-## MAIN CONTROLLER
+## MAIN CONTROLLER 
+#### (needs rework for new wiring, update after main.lua is completed)
 ```mermaid
 ---
 config:
@@ -25,8 +26,7 @@ flowchart LR
     Out6 --> G
     Out7 --> G
     Out8 --> G
-
-     B:::Rose
+    
     classDef Rose stroke-width:1px, stroke-dasharray:none, stroke:#FF5978, fill:#FFDFE5, color:#8E2236
     style In1 fill:#BBDEFB,color:#000000
     style In2 fill:#BBDEFB,color:#000000
