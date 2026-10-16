@@ -7,30 +7,26 @@ function onTick()
     PV_Zr = input.getNumber(6) -- z rotation(euler)
     v_spd = input.getNumber(9) -- linear velocity Z speed
     ra = input.getNumber(18) -- radio altimeter(parllel to airframe) | 18 because physics sensor comp indices range from 1-17
-
-    SP_Xr = 0 -- x rotation setpoint
-    SP_Yr = 0 -- y rotation setpoint
-    SP_Zr = 0 -- z rotation setpoint
+    launch = input.getBool(1) -- wired to launch button
+    test = input.getBool(2) -- wired to test button
 
     stage = 0 -- flight stage(init guard)
 
-    if ra < 1 then
-        stage = 0 --ground state
-    elseif ra >= 1 and v_spd > 5 then
-        stage = 1 --ascend state
+    if test then
+        stage = 0 --test state
+    elseif ra < 1 then
+        stage = 1 --ground state
+    elseif launch then
+        stage = 2 --launch/ascent state
     elseif ra > 50 and v_spd < -5 then
-        stage = 2 --descend state
+        stage = 3 --descend state
     elseif ra >= 1 and ra <= 50 and v_spd >= -5 and v_spd < 0 then
-        stage = 3 --approach state
+        stage = 4 --approach state
     end
 
-    -- flight target calculations
-    error_x = SP_Xr - x
-    error_y = SP_Yr - y
-
-    output.setNumber(1, SP_Xr)
-    output.setNumber(2, SP_Yr)
-    output.setNumber(3, SP_Zr)
+    output.setNumber(1, PV_Xr)
+    output.setNumber(2, PV_Yr)
+    output.setNumber(3, PV_Zr)
     output.setNumber(4, v_spd)
     output.setNumber(5, ra)
     output.setNumber(6, stage)
