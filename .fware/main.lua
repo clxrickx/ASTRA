@@ -10,7 +10,7 @@ function onTick()
     launch = input.getBool(1) -- wired to launch button
     test = input.getBool(2) -- wired to test button
 
-    stage = 0 -- flight stage(init guard)
+    stage = 1 -- flight stage(init guard)
 
     if test then
         stage = 0 --test state
