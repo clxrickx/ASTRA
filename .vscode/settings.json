@@ -39,7 +39,13 @@
     "Lua.workspace.library": [
         "/Users/christophercyhui/Documents/GitHub/ASTRA/",
         "/Users/christophercyhui/.vscode/extensions/nameouschangey.lifeboatapi-0.0.33/assets/lua/Common/",
-        "/Users/christophercyhui/.vscode/extensions/nameouschangey.lifeboatapi-0.0.33/assets/lua/Addon/",
+        "/Users/christophercyhui/.vscode/extensions/nameouschangey.lifeboatapi-0.0.33/assets/lua/Microcontroller/",
         "/Users/christophercyhui/Documents/GitHub/ASTRA/_build/libs/"
+    ],
+    "lifeboatapi.stormworks.libs.gitLibraries": [
+        {
+            "name": "LifeBoatAPI",
+            "gitUrl": "https://github.com/nameouschangey/Stormworks_LifeBoatAPI_MC.git"
+        }
     ]
 }
