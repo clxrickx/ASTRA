@@ -5,7 +5,7 @@ Iy = 0 --init guard
 dt = 1/60 -- 60hz tick rate as per stormworks
 
 function PIDx(setpoint, pv, Kp, Ki, Kd)
-    ex = setpoint - pv
+    ex = (setpoint - pv + math.pi) % (2 * math.pi) - math.pi
     Px = ex * Kp
     Ix = Ix + ex * dt
     Dx = (ex - prev_errorx) / dt * Kd
@@ -15,7 +15,7 @@ function PIDx(setpoint, pv, Kp, Ki, Kd)
 end
 
 function PIDy(setpoint, pv, Kp, Ki, Kd)
-    ey = setpoint - pv
+    ey = (setpoint - pv + math.pi) % (2 * math.pi) - math.pi
     Py = ey * Kp
     Iy = Iy + ey * dt
     Dy = (ey - prev_errory) / dt * Kd
@@ -35,15 +35,15 @@ function onTick()
     tvc_x = 0 --init guard, no z rotation control needed
     tvc_y = 0
 
-    SP_Xr = 0 -- x rotation setpoint
+    SP_Xr = math.pi -- x rotation setpoint
     SP_Yr = 0 -- y rotation setpoint
 
     if stage == 1 then
         tvc_x, tvc_y = 0, 0 --tvcs neutral on ground
         Ix, Iy, prev_errorx, prev_errory = 0, 0, 0, 0 --prevent integral windup and derivative kick
     else
-        tvc_x = PIDx(SP_Xr, PV_Xr, 0.0, 0.0, 0.0)
-        tvc_y = PIDy(SP_Yr, PV_Yr, 0.0, 0.0, 0.0)
+        tvc_x = PIDx(SP_Xr, PV_Xr, 0.5, 0.0, 0.0)
+        tvc_y = PIDy(SP_Yr, PV_Yr, 0.5, 0.0, 0.0)
     end
 
     output.setNumber(1, tvc_x)

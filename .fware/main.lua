@@ -30,5 +30,13 @@ function onTick()
     output.setNumber(4, v_spd)
     output.setNumber(5, ra)
     output.setNumber(6, stage)
+end
 
+function onDraw() --debug info
+    screen.setColor(0, 0, 0, 255)
+    screen.drawText(5, 5, "Stage: " .. stage)
+    screen.drawText(5, 15, "Xr: " .. PV_Xr)
+    screen.drawText(5, 25, "Yr: " .. PV_Yr)
+    screen.drawText(5, 35, "v_spd: " .. v_spd)
+    screen.drawText(5, 45, "ra: " .. ra)
 end
