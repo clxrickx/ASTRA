@@ -42,7 +42,7 @@ function onTick()
     SP_Yr = math.pi -- y rotation setpoint
 
     if stage == 1 then
-        tvc_x, tvc_y = 0, 0 --tvcs neutral on ground
+        tvc_x, tvc_y, ex, ey = 0, 0, 0, 0 --tvcs neutral on ground
         Ix, Iy, prev_errorx, prev_errory = 0, 0, 0, 0 --prevent integral windup and derivative kick
     else
         tvc_x = PIDx(SP_Xr, PV_Xr, 0.5, 0.0, 0.0)

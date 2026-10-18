@@ -36,7 +36,7 @@ function onTick()
     end
 
     thr = PID(sp, spd, 1, 0, 0)
-    clamp(thr, 0, 1)
+    thr = clamp(thr, 0, 1)
 
     output.setNumber(1, thr) 
     output.setNumber(2, sp) --debug
