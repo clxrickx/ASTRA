@@ -16,17 +16,17 @@ function onTick()
         stagename = "TEST"
     elseif launch then
         stage = 2 --launch/ascent state
-        stagename = "LAUNCH"
+        stagename = "LNCH"
     elseif ra < 0.75 then -- 0.75 = 3 units
         stage = 1 --ground state
-        stagename = "GROUND"
+        stagename = "GRND"
     elseif ra > 150 then
         stage = 3 --coast/apogee state
-        stagename = "APOGEE"
+        stagename = "APOG"
     elseif ra > 50 and v_spd < 0 then
         stage = 4 --descent state
-        stagename = "DESCNT"
-    elseif ra >= 1 and ra <= 50 and v_spd >= -5 and v_spd < 0 then
+        stagename = "DESC"
+    elseif ra >= 1 and ra <= 50 and v_spd < 0 then
         stage = 5 --landing state
         stagename = "LAND"
     end

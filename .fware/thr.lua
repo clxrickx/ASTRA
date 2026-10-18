@@ -3,9 +3,9 @@ prev_error = 0
 dt = 1/60 -- 60hz tick rate
 
 function PID(setpoint, pv, Kp, Ki, Kd)
-    e = (setpoint - pv + math.pi) % (2 * math.pi) - math.pi
+    e = setpoint - pv
     P = e * Kp
-    I = Ix + e * dt
+    I = I + e * dt
     D = (e - prev_error) / dt * Kd
     prev_error = e
     return P + (I * Ki) + D
@@ -35,7 +35,9 @@ function onTick()
         sp = -3
     end
 
-    thr = PID(sp, spd, 0.5, 0, 0)
+    thr = PID(sp, spd, 1, 0, 0)
+    clamp(thr, 0, 1)
 
-    output.setNumber(1, thr)
+    output.setNumber(1, thr) 
+    output.setNumber(2, sp) --debug
 end
