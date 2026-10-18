@@ -14,13 +14,15 @@ function onTick()
     if test then
         stage = 0 --test state
     elseif launch then
-        stage = 1 --launch/ascent state
+        stage = 2 --launch/ascent state
     elseif ra < 0.75 then -- 0.75 = 3 units
-        stage = 3 --ground state
-    elseif ra > 50 and v_spd < -5 then
-        stage = 3 --descend state
+        stage = 1 --ground state
+    elseif ra > 150 then
+        stage = 3 --coast/apogee state
+    elseif ra > 50 and v_spd < 0 then
+        stage = 4 --descent state
     elseif ra >= 1 and ra <= 50 and v_spd >= -5 and v_spd < 0 then
-        stage = 4 --approach state
+        stage = 5 --landing state
     end
 
     output.setNumber(1, PV_Xr)
@@ -28,6 +30,7 @@ function onTick()
     output.setNumber(3, v_spd)
     output.setNumber(4, ra)
     output.setNumber(5, stage)
+    output.setNumber(6, y)
 end
 
 function onDraw() --debug info

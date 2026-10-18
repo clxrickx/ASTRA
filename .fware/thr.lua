@@ -16,5 +16,26 @@ function clamp(v, lo, hi)
 end
 
 function onTick()
+    spd = input.getNumber(3) -- vertical speed, factored as "spd" for simplicity
+    ra = input.getNumber(4) -- radio altimeter
+    stage = input.getNumber(5)
+    y = input.getNumber(6) -- vertical position(cartesian)
 
+    sp = 0 -- init guard; linear speed setpoint
+
+    if stage == 0 or stage == 1 then --test stage/ground stage
+        sp = 0 
+    elseif stage == 2 then --climb/ascent
+        sp = 20 
+    elseif stage == 3 then --coast/apogee
+        sp = 0
+    elseif stage == 4 then --descent
+        sp = -15
+    elseif stage == 5 then --landing
+        sp = -3
+    end
+
+    thr = PID(sp, spd, 0.5, 0, 0)
+
+    output.setNumber(1, thr)
 end
