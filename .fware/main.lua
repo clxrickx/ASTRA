@@ -23,6 +23,7 @@ function onTick()
     elseif (ra > 50 and v_spd < 0) or v_spd < -20 then
         stage = 4 --descent state
         stagename = "DESC"
+        launched = false
     elseif ra >= 1 and ra <= 50 and v_spd < 0 then
         stage = 5 --landing state
         stagename = "LAND"
@@ -30,7 +31,7 @@ function onTick()
         stage = 2 --launch/ascent state
         stagename = "LNCH"
         launched = true
-    elseif ra < 0.75 and not launched then -- 0.75 = 3 units
+    elseif ra < 1 and not launched then -- 0.75 = 3 units
         stage = 1 --ground state
         stagename = "GRND"
         launched = false
