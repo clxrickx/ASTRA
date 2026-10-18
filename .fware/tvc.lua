@@ -47,8 +47,8 @@ function onTick()
     else
         tvc_x = PIDx(SP_Xr, PV_Xr, 0.5, 0, 0)
         tvc_y = PIDy(SP_Yr, PV_Yr, 0.5, 0, 0)
-        tvc_x = clamp(tvc_x, -1, 1)
-        tvc_y = clamp(tvc_y, -1, 1)
+        tvc_x = clamp(tvc_x, -0.2, 0.2)
+        tvc_y = clamp(tvc_y, -0.2, 0.2)
     end
 
     output.setNumber(1, tvc_x)
