@@ -1,5 +1,5 @@
-launched = 0
-
+launched = false
+prev_launch = false
 function onTick()
     x = input.getNumber(1) -- x position(cartesian)
     y = input.getNumber(2) -- y position(cartesian)
@@ -13,28 +13,33 @@ function onTick()
 
     stage = 1 -- flight stage(init guard)
 
+
     if test then
         stage = 0 --test state
         stagename = "TEST"
     elseif ra > 150 then
         stage = 3 --coast/apogee state
         stagename = "APOG"
-    elseif ra > 50 and v_spd < 0 then
+    elseif (ra > 50 and v_spd < 0) or v_spd < -20 then
         stage = 4 --descent state
         stagename = "DESC"
     elseif ra >= 1 and ra <= 50 and v_spd < 0 then
         stage = 5 --landing state
         stagename = "LAND"
-    elseif launch then
-        if not launched >= 120 then
-            stage = 2 --launch/ascent state
-            stagename = "LNCH"
-            launched = launched + 1
-        end
-    elseif ra < 0.75 then -- 0.75 = 3 units
+    elseif launch and not prev_launch then
+        stage = 2 --launch/ascent state
+        stagename = "LNCH"
+        launched = true
+    elseif ra < 0.75 and not launched then -- 0.75 = 3 units
         stage = 1 --ground state
         stagename = "GRND"
+        launched = false
+    else
+        stage = 2
+        stagename = "LNCH"
     end
+
+    prev_launch = launch
 
     output.setNumber(1, PV_Xr)
     output.setNumber(2, PV_Yr)
