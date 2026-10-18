@@ -26,16 +26,16 @@ function onTick()
     if stage == 0 or stage == 1 then --test stage/ground stage
         sp = 0 
     elseif stage == 2 then --climb/ascent
-        sp = 10 
+        sp = 5 
     elseif stage == 3 then --coast/apogee
         sp = 0
     elseif stage == 4 then --descent
-        sp = -5
+        sp = -3
     elseif stage == 5 then --landing
-        sp = -2
+        sp = -1
     end
 
-    thr = PID(sp, spd, 20, 0, 1)
+    thr = PID(sp, spd, 10, 0, 1)
     thr = clamp(thr, 0, 1) + 0.2 --constant for tvc maneuvering
 
     output.setNumber(1, thr) 
