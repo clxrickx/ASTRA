@@ -4,6 +4,10 @@ Ix = 0 --init guard
 Iy = 0 --init guard
 dt = 1/60 -- 60hz tick rate as per stormworks
 
+function clamp(v, lo, hi)
+    return math.max(lo, math.min(hi, v))
+end
+
 function PIDx(setpoint, pv, Kp, Ki, Kd)
     ex = (setpoint - pv + math.pi) % (2 * math.pi) - math.pi
     Px = ex * Kp
@@ -27,25 +31,30 @@ end
 function onTick()
     PV_Xr = input.getNumber(1)
     PV_Yr = input.getNumber(2)
-    PV_Zr = input.getNumber(3)
-    v_spd = input.getNumber(4)
-    ra = input.getNumber(5)
-    stage = input.getNumber(6)
+    v_spd = input.getNumber(3)
+    ra = input.getNumber(4)
+    stage = input.getNumber(5)
 
     tvc_x = 0 --init guard, no z rotation control needed
     tvc_y = 0
 
     SP_Xr = math.pi -- x rotation setpoint
-    SP_Yr = 0 -- y rotation setpoint
+    SP_Yr = math.pi -- y rotation setpoint
 
-    if stage == 1 then
+    if stage == 3 then
         tvc_x, tvc_y = 0, 0 --tvcs neutral on ground
         Ix, Iy, prev_errorx, prev_errory = 0, 0, 0, 0 --prevent integral windup and derivative kick
     else
-        tvc_x = PIDx(SP_Xr, PV_Xr, 0.5, 0.0, 0.0)
-        tvc_y = PIDy(SP_Yr, PV_Yr, 0.5, 0.0, 0.0)
+        tvc_x = PIDx(SP_Xr, PV_Xr, 2, 0.0, 0.0)
+        tvc_y = PIDy(SP_Yr, PV_Yr, 2, 0.0, 0.0)
+        tvc_x = clamp(tvc_x, -0.1, 0.1)
+        tvc_y = clamp(tvc_y, -0.1, 0.1)
     end
 
     output.setNumber(1, tvc_x)
     output.setNumber(2, tvc_y)
+    output.setNumber(3, SP_Xr)
+    output.setNumber(4, SP_Yr)
+    output.setNumber(5, ex)
+    output.setNumber(6, ey)
 end
