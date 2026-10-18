@@ -13,16 +13,22 @@ function onTick()
 
     if test then
         stage = 0 --test state
+        stagename = "TEST"
     elseif launch then
         stage = 2 --launch/ascent state
+        stagename = "LAUNCH"
     elseif ra < 0.75 then -- 0.75 = 3 units
         stage = 1 --ground state
+        stagename = "GROUND"
     elseif ra > 150 then
         stage = 3 --coast/apogee state
+        stagename = "APOGEE"
     elseif ra > 50 and v_spd < 0 then
         stage = 4 --descent state
+        stagename = "DESCNT"
     elseif ra >= 1 and ra <= 50 and v_spd >= -5 and v_spd < 0 then
         stage = 5 --landing state
+        stagename = "LAND"
     end
 
     output.setNumber(1, PV_Xr)
@@ -36,4 +42,5 @@ end
 function onDraw() --debug info
     screen.setColor(0, 255, 255)
     screen.drawText(5, 5, "S" .. stage)
+    screen.drawText(5, 15, stagename)
 end
