@@ -1,3 +1,5 @@
+launched = false
+
 function onTick()
     x = input.getNumber(1) -- x position(cartesian)
     y = input.getNumber(2) -- y position(cartesian)
@@ -24,8 +26,11 @@ function onTick()
         stage = 5 --landing state
         stagename = "LAND"
     elseif launch then
-        stage = 2 --launch/ascent state
-        stagename = "LNCH"
+        if not launched then
+            stage = 2 --launch/ascent state
+            stagename = "LNCH"
+            launched = true
+        end
     elseif ra < 0.75 then -- 0.75 = 3 units
         stage = 1 --ground state
         stagename = "GRND"
