@@ -17,10 +17,10 @@ function onTick()
     if test then
         stage = 0 --test state
         stagename = "TEST"
-    elseif ra > 150 then
+    elseif ra > 300 then
         stage = 3 --coast/apogee state
         stagename = "APOG"
-    elseif (ra > 50 and v_spd < 0) or v_spd < -20 then
+    elseif (ra > 50 and v_spd < 0) or v_spd < -10 then
         stage = 4 --descent state
         stagename = "DESC"
         launched = false
