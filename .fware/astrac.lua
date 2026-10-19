@@ -19,7 +19,7 @@ prev_errorz = 0
 function PIDthr(setpoint, pv, Kp, Ki, Kd)
     Et = setpoint - pv
     Pt = Et * Kp
-    It = I + Et * dt
+    It = It + Et * dt
     Dthr = (Et - prev_errort) / dt * Kd
     prev_errort = Et
     return Pt + (It * Ki) + Dthr
@@ -69,7 +69,7 @@ function onTick()
     test = input.getBool(1)
     launch = input.getBool(2)
     -- radio altimeter
-    RA = input.getNumber(18)
+    ra = input.getNumber(18)
 
     -- STAGE SUBPROCESS
     if test then
@@ -78,11 +78,11 @@ function onTick()
     elseif ra > 300 then
         stage = 3 --coast/apogee state
         stagename = "APOG"
-    elseif (ra > 50 and v_spd < 0) or v_spd < -10 then
+    elseif (ra > 50 and yV_lin < 0) or yV_lin < -10 then
         stage = 4 --descent state
         stagename = "DESC"
         launched = false
-    elseif ra >= 2 and ra <= 50 and v_spd < 0 then
+    elseif ra >= 2 and ra <= 50 and yV_lin < 0 then
         stage = 5 --landing state
         stagename = "LAND"
     elseif launch and not prev_launch then
@@ -152,7 +152,7 @@ function onTick()
     output.setNumber(14, absV_ang)
     output.setNumber(15, PV_Zr)
     output.setNumber(16, PV_Xr)
-    output.setNumber(18, RA)
+    output.setNumber(18, ra)
     output.setBool(1, test)
     output.setBool(2, launch)
     -- PROCESSED DATA OUT
