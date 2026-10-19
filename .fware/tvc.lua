@@ -9,7 +9,7 @@ function clamp(v, lo, hi)
 end
 
 function PIDx(setpoint, pv, Kp, Ki, Kd)
-    ex = (setpoint - pv)
+    ex = (setpoint - pv + math.pi) % (2 * math.pi) - math.pi
     Px = ex * Kp
     Ix = Ix + ex * dt
     Dx = (ex - prev_errorx) / dt * Kd
@@ -19,7 +19,7 @@ function PIDx(setpoint, pv, Kp, Ki, Kd)
 end
 
 function PIDy(setpoint, pv, Kp, Ki, Kd)
-    ey = (setpoint - pv)
+    ey = (setpoint - pv + math.pi) % (2 * math.pi) - math.pi
     Py = ey * Kp
     Iy = Iy + ey * dt
     Dy = (ey - prev_errory) / dt * Kd

@@ -1,9 +1,6 @@
 launched = false
 prev_launch = false
 
-function wrap(a)
-    return (a + math.pi) % (2 * math.pi) - math.pi
-end
 
 function onTick()
     x = input.getNumber(1) -- x position(cartesian)
@@ -36,7 +33,7 @@ function onTick()
         stage = 2 --launch/ascent state
         stagename = "LNCH"
         launched = true
-    elseif ra < 2 and not launched then -- 0.75 = 3 units
+    elseif ra < 2 and not launched then -- 2 = 8 units
         stage = 1 --ground state
         stagename = "GRND"
         launched = false
@@ -46,9 +43,6 @@ function onTick()
     end
 
     prev_launch = launch
-
-    pvx = SP_Xr + wrap(PV_Xr - SP_Xr)
-    pvy = SP_Yr + wrap(PV_Yr - SP_Yr)
 
     output.setNumber(1, pvx)
     output.setNumber(2, pvy)
