@@ -9,7 +9,7 @@ function clamp(v, lo, hi)
 end
 
 function PIDx(setpoint, pv, Kp, Ki, Kd)
-    ex = (setpoint - pv + math.pi) % (2 * math.pi) - math.pi
+    ex = (setpoint - pv + math.pi / 2) % math.pi - math.pi / 2
     Px = ex * Kp
     Ix = Ix + ex * dt
     Dx = (ex - prev_errorx) / dt * Kd
@@ -19,7 +19,7 @@ function PIDx(setpoint, pv, Kp, Ki, Kd)
 end
 
 function PIDz(setpoint, pv, Kp, Ki, Kd)
-    ez = (setpoint - pv + math.pi) % (2 * math.pi) - math.pi
+    ez = (setpoint - pv + math.pi / 2) % math.pi - math.pi / 2
     Pz = ez * Kp
     Iz = Iz + ez * dt
     Dz = (ez - prev_errorz) / dt * Kd
