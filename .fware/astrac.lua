@@ -70,6 +70,11 @@ function onTick()
     launch = input.getBool(2)
     -- radio altimeter
     ra = input.getNumber(18)
+    -- other external information from various places
+    fuel = input.getNumber(19) -- fuel remaining(in litres)
+    bat = input.getNumber(20) --battery voltage from 0-1
+    servo_x = input.getNumber(21) -- actual x "servo[piston]" position
+    servo_z = input.getNumber(22) -- actual z "servo[piston]" position
 
     -- STAGE SUBPROCESS
     if test then
@@ -153,6 +158,10 @@ function onTick()
     output.setNumber(15, PV_Zr)
     output.setNumber(16, PV_Xr)
     output.setNumber(18, ra)
+    output.setNumber(19, fuel)
+    output.setNumber(20, bat)
+    output.setNumber(21, servo_x)
+    output.setNumber(22, servo_z)
     output.setBool(1, test)
     output.setBool(2, launch)
     -- PROCESSED DATA OUT
