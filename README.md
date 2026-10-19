@@ -1,3 +1,4 @@
+<img width="2338" height="900" alt="astrac" src="https://github.com/user-attachments/assets/3e74ed0b-7ede-4447-b031-0e673ed0a3bf" />
 # ASTRAC
 ASTRA(Autonomously Stabilized Thrust-to-Recovery Avionics Computer) is a self-landing stormworks TVC flight computer coded in stormworks Lua.
 
