@@ -11,3 +11,6 @@ The main controller takes the radio altimeter altitude(which is mounted parllel 
 
 ### **TVC Controller:**
 The TVC controller takes control of the TVC mounts and servos, which are the only active guidance system that ASTRA uses(with passive guidance and stabilization systems like bottom and top mounted fins). The TVC controller uses a PID controller algorithm to control the vector mounts in the engine, therefore guiding the rocket. The TVC controller cannot be marginally stable; it must be fully stable as any sinuodial occillations will exponentially increase and lead to a crash.
+
+### **Throttle Controller:**
+The throttle controller controls the throttle input into the jet's combustion chamber, and uses the stage output from the main controller to set vertical speed setpoints, which is also taken from the main controller. The throttle controller, like the TVC controller, uses a PID controller to control the throttle.
