@@ -1,1 +1,165 @@
+-- GLOBALS/INIT GUARDS
+dt = 1/60 -- 60hz tick rate
+stage = 1
+sp = 0 --throttle setpoint
+tvc_x = 0 --init guard, no y rotation control needed
+tvc_z = 0
+comp = false
 
+-- PID LOCALS
+It = 0
+Ix = 0
+Iz = 0
+
+prev_errort = 0
+prev_errorx = 0
+prev_errorz = 0
+
+--PID FUNCTIONS
+function PIDthr(setpoint, pv, Kp, Ki, Kd)
+    Et = setpoint - pv
+    Pt = Et * Kp
+    It = I + Et * dt
+    Dthr = (Et - prev_errort) / dt * Kd
+    prev_errort = Et
+    return Pt + (It * Ki) + Dthr
+end
+function PIDx(setpoint, pv, Kp, Ki, Kd)
+    ex = (setpoint - pv + math.pi / 2) % math.pi - math.pi / 2
+    Px = ex * Kp
+    Ix = Ix + ex * dt
+    Dx = (ex - prev_errorx) / dt * Kd
+    prev_errorx = ex
+
+    return Px + (Ix * Ki) + Dx
+end
+function PIDz(setpoint, pv, Kp, Ki, Kd)
+    ez = (setpoint - pv + math.pi / 2) % math.pi - math.pi / 2
+    Pz = ez * Kp
+    Iz = Iz + ez * dt
+    Dz = (ez - prev_errorz) / dt * Kd
+    prev_errorz = ez
+
+    return Pz + (Iz * Ki) + Dz
+end
+
+--CLAMP FUNCTION
+function clamp(var, lo, hi)
+    return math.max(lo, math.min(hi, var))
+end
+
+
+
+function onTick()
+    -- IMU composite
+    xGPS = input.getNumber(1)
+    yGPS = input.getNumber(2)
+    zGPS = input.getNumber(3) -- check if we have a barometer in SW
+    xV_lin = input.getNumber(7)
+    yV_lin = input.getNumber(8)
+    zV_lin = input.getNumber(9)
+    xV_ang = input.getNumber(10)
+    yV_ang = input.getNumber(11)
+    zV_ang = input.getNumber(12)
+    absV_lin = input.getNumber(13)
+    absV_ang = input.getNumber(14)
+    PV_Zr = input.getNumber(15)
+    PV_Xr = input.getNumber(16)
+    -- bools
+    test = input.getBool(1)
+    launch = input.getBool(2)
+    -- radio altimeter
+    RA = input.getNumber(18)
+
+    -- STAGE SUBPROCESS
+    if test then
+        stage = 0 --test state
+        stagename = "TEST"
+    elseif ra > 300 then
+        stage = 3 --coast/apogee state
+        stagename = "APOG"
+    elseif (ra > 50 and v_spd < 0) or v_spd < -10 then
+        stage = 4 --descent state
+        stagename = "DESC"
+        launched = false
+    elseif ra >= 2 and ra <= 50 and v_spd < 0 then
+        stage = 5 --landing state
+        stagename = "LAND"
+    elseif launch and not prev_launch then
+        stage = 2 --launch/ascent state
+        stagename = "LNCH"
+        launched = true
+    elseif ra < 2 and not launched then -- 2 = 8 units
+        stage = 1 --ground state
+        stagename = "GRND"
+        launched = false
+    else
+        stage = 2
+        stagename = "LNCH"
+    end
+    prev_launch = launch
+
+
+    -- THROTTLE SUBPROCESS
+    if stage == 0 or stage == 1 then --test stage/ground stage
+        sp = 0 
+    elseif stage == 2 then --climb/ascent
+        sp = 5 
+    elseif stage == 3 then --coast/apogee
+        sp = 0
+    elseif stage == 4 then --descent
+        sp = -3
+    elseif stage == 5 then --landing
+        sp = -1
+    end
+
+    thr = PIDthr(sp, yV_lin, 10, 0, 0)
+    thr = clamp(thr, 0, 1)
+
+    if thr > 0 then
+        comp = true -- turn compressor on if throttle is greater than 0(e.g. it's active)
+    else
+        comp = false
+    end
+
+    -- TVC SUBPROCESS
+    SP_Xr = 0 -- x rotation setpoint
+    SP_Zr = 0 -- z rotation setpoint
+
+    if stage == 1 then
+        tvc_x, tvc_z, ex, ez = 0, 0, 0, 0 --tvcs neutral on ground
+        Ix, Iz, prev_errorx, prev_errorz = 0, 0, 0, 0 --prevent integral windup and derivative kick
+    else
+        tvc_x = PIDx(SP_Xr, PV_Xr, 4, 0, 0)
+        tvc_z = PIDz(SP_Zr, PV_Zr, 4, 0, 0)
+        tvc_x = clamp(tvc_x, -0.5, 0.5)
+        tvc_z = clamp(tvc_z, -0.5, 0.5)
+    end
+
+
+
+    -- COMP OUT WRITE (to radio transmitter)
+    output.setNumber(1, xGPS)
+    output.setNumber(2, yGPS)
+    output.setNumber(3, zGPS) -- check if we have a barometer in SW
+    output.setNumber(7, xV_lin)
+    output.setNumber(8, yV_lin)
+    output.setNumber(9, zV_lin)
+    output.setNumber(10, xV_ang)
+    output.setNumber(11, yV_ang)
+    output.setNumber(12, zV_ang)
+    output.setNumber(13, absV_lin)
+    output.setNumber(14, absV_ang)
+    output.setNumber(15, PV_Zr)
+    output.setNumber(16, PV_Xr)
+    output.setNumber(18, RA)
+    output.setBool(1, test)
+    output.setBool(2, launch)
+    -- PROCESSED DATA OUT
+    output.setNumber(1, tvc_x)
+    output.setNumber(2, tvc_z)
+    output.setNumber(3, -tvc_x)
+    output.setNumber(4, -tvc_z)
+    output.setNumber(5, thr)
+    output.setBool(1, comp)
+end
