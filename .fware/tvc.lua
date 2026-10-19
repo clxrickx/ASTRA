@@ -22,7 +22,7 @@ function PIDz(setpoint, pv, Kp, Ki, Kd)
     ez = (setpoint - pv + math.pi) % (2 * math.pi) - math.pi
     Pz = ez * Kp
     Iz = Iz + ez * dt
-    Dz = (ez - prev_errory) / dt * Kd
+    Dz = (ez - prev_errorz) / dt * Kd
     prev_errorz = ez
 
     return Pz + (Iz * Ki) + Dz
@@ -35,18 +35,18 @@ function onTick()
     ra = input.getNumber(4)
     stage = input.getNumber(5)
 
-    tvc_x = 0 --init guard, no z rotation control needed
+    tvc_x = 0 --init guard, no y rotation control needed
     tvc_z = 0
 
     SP_Xr = math.pi -- x rotation setpoint
-    SP_Zr = math.pi -- y rotation setpoint
+    SP_Zr = math.pi -- z rotation setpoint
 
     if stage == 1 then
-        tvc_x, tvc_z, ex, ey = 0, 0, 0, 0 --tvcs neutral on ground
-        Ix, Iy, prev_errorx, prev_errory = 0, 0, 0, 0 --prevent integral windup and derivative kick
+        tvc_x, tvc_z, ex, ez = 0, 0, 0, 0 --tvcs neutral on ground
+        Ix, Iz, prev_errorx, prev_errorz = 0, 0, 0, 0 --prevent integral windup and derivative kick
     else
         tvc_x = PIDx(SP_Xr, PV_Xr, 4, 0, 0)
-        tvc_z = PIDz(SP_Zr, PV_Yr, 4, 0, 0)
+        tvc_z = PIDz(SP_Zr, PV_Zr, 4, 0, 0)
         tvc_x = clamp(tvc_x, -0.5, 0.5)
         tvc_z = clamp(tvc_z, -0.5, 0.5)
     end
@@ -58,6 +58,6 @@ function onTick()
     output.setNumber(5, SP_Xr)
     output.setNumber(6, SP_Zr)
     output.setNumber(7, ex)
-    output.setNumber(8, ey)
+    output.setNumber(8, ez)
 
 end
