@@ -45,8 +45,8 @@ function onTick()
         tvc_x, tvc_y, ex, ey = 0, 0, 0, 0 --tvcs neutral on ground
         Ix, Iy, prev_errorx, prev_errory = 0, 0, 0, 0 --prevent integral windup and derivative kick
     else
-        tvc_x = PIDx(SP_Xr, PV_Xr, 0.5, 0, 0)
-        tvc_y = PIDy(SP_Yr, PV_Yr, 0.5, 0, 0)
+        tvc_x = PIDx(SP_Xr, PV_Xr, 4, 0, 0)
+        tvc_y = PIDy(SP_Yr, PV_Yr, 4, 0, 0)
         tvc_x = clamp(tvc_x, -0.5, 0.5)
         tvc_y = clamp(tvc_y, -0.5, 0.5)
     end
@@ -55,5 +55,9 @@ function onTick()
     output.setNumber(2, tvc_y)
     output.setNumber(3, -tvc_x)
     output.setNumber(4, -tvc_y)
+    output.setNumber(5, SP_Xr)
+    output.setNumber(6, SP_Yr)
+    output.setNumber(7, ex)
+    output.setNumber(8, ey)
 
 end
