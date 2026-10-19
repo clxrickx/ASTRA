@@ -3,13 +3,12 @@ prev_launch = false
 
 
 function onTick()
-    x = input.getNumber(1) -- x position(cartesian)
-    z = input.getNumber(2) -- z position(cartesian)
-    y = input.getNumber(3) -- y position(cartesian)
-    PV_Xr = input.getNumber(4) -- x rotation(euler)
-    PV_Zr = input.getNumber(6) -- z rotation(euler)
-    PV_Yr = input.getNumber(5) -- Y rotation(euler)
-    v_spd = input.getNumber(9) -- linear velocity y speed
+    x = input.getNumber(1) -- x position(GPS)
+    y = input.getNumber(2) -- y position(GPS)
+    z = input.getNumber(3) -- z position(GPS)
+    PV_Xr = input.getNumber(16) -- x rotation(local)
+    PV_Zr = input.getNumber(15) -- z rotation(local)
+    v_spd = input.getNumber(8) -- linear velocity y speed
     ra = input.getNumber(18) -- radio altimeter(parllel to airframe) | 18 because physics sensor comp indices range from 1-17
     launch = input.getBool(1) -- wired to launch button
     test = input.getBool(2) -- wired to test button
@@ -47,7 +46,6 @@ function onTick()
 
     output.setNumber(1, PV_Xr)
     output.setNumber(2, PV_Zr)
-    output.setNumber(7, PV_Yr)
     output.setNumber(3, v_spd)
     output.setNumber(4, ra)
     output.setNumber(5, stage)
