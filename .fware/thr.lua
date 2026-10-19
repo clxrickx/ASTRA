@@ -35,7 +35,7 @@ function onTick()
         sp = -1
     end
 
-    thr = PID(sp, spd, 10, 0, 1)
+    thr = PID(sp, spd, 10, 0, 0)
     thr = clamp(thr, 0, 1) + 0.4 --constant for tvc maneuvering
 
     output.setNumber(1, thr) 
