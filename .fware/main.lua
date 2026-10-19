@@ -1,5 +1,10 @@
 launched = false
 prev_launch = false
+
+function wrap(a)
+    return (a + math.pi) % (2 * math.pi) - math.pi
+end
+
 function onTick()
     x = input.getNumber(1) -- x position(cartesian)
     y = input.getNumber(2) -- y position(cartesian)
@@ -42,8 +47,11 @@ function onTick()
 
     prev_launch = launch
 
-    output.setNumber(1, PV_Xr)
-    output.setNumber(2, PV_Yr)
+    pvx = SP_Xr + wrap(PV_Xr - SP_Xr)
+    pvy = SP_Yr + wrap(PV_Yr - SP_Yr)
+
+    output.setNumber(1, pvx)
+    output.setNumber(2, pvy)
     output.setNumber(3, v_spd)
     output.setNumber(4, ra)
     output.setNumber(5, stage)
