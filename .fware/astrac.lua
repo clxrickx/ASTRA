@@ -97,12 +97,21 @@ function onTick()
     elseif yGPS > 12 and v_spd < 10 then
         stage = 2 --descent state
         stagename = "DESC"
-    elseif launch then
-        stage = 4 --launch/ascent state
-        stagename = "LNCH"
     elseif ra < 2 then
         stage = 1 --ground state
         stagename = "GRND"
+        if not launch then
+            launch_armed = false
+        end
+    elseif stage == 1 and launch_edge and launch_armed then
+        stage = 4
+        stagename = "LNCH"
+        launch_armed = true
+    elseif stage == 4 then
+        stage = 4
+        stagename = "LNCH"
+    else
+        stage = 2
     end
 
 
