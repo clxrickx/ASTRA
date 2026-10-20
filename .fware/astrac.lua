@@ -172,11 +172,11 @@ function onTick()
     output.setBool(1, test)
     output.setBool(2, launch)
     -- PROCESSED DATA OUT
-    output.setNumber(24, tvc_x)
-    output.setNumber(25, tvc_z)
-    output.setNumber(26, -tvc_x)
-    output.setNumber(27, -tvc_z)
-    output.setNumber(28, thr)
+    output.setNumber(26, tvc_x)
+    output.setNumber(27, tvc_z)
+    output.setNumber(28, -tvc_x)
+    output.setNumber(29, -tvc_z)
+    output.setNumber(30, thr)
 end
 
 function onDraw()
