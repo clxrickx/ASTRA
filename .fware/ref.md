@@ -27,4 +27,3 @@ Set values to a composite output. Index ranges from 1-32.
 15 - Local Z Tilt
 16 - Local X Tilt
 17 - Compass Heading(-0.5 ~ 0.5)
-
