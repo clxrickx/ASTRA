@@ -8,6 +8,8 @@ tvc_z = 0
 prev_fuel = 0
 prev_bat = 0
 prev_alt = 0
+launch_armed = false
+launch_edge = false
 FFpS = 0 --fuel flow per second
 BUpS = 0 --battery discharge per second
 v_spd = 0
@@ -72,8 +74,7 @@ function onTick()
     PV_Zr = input.getNumber(15)
     PV_Xr = input.getNumber(16)
     -- bools
-    test = input.getBool(1)
-    launch = input.getBool(2)
+    launch = input.getBool(1)
     -- radio altimeter
     ra = input.getNumber(18)
     -- other external information from various places
@@ -86,38 +87,35 @@ function onTick()
     prev_alt = yGPS
 
     -- STAGE SUBPROCESS
-    if test then
-        stage = 0 --test state
-        stagename = "TEST"
-    elseif yGPS > 200 then
+    launch_edge = launch and not prev_launch
+    prev_launch = launch
+
+    if yGPS > 200 then
         stage = 3 --coast/apogee state
         stagename = "APOG"
+        lnch_ctrl = false
     elseif yGPS > 12 and v_spd < 10 then
-        stage = 4 --descent state
+        stage = 2 --descent state
         stagename = "DESC"
-    elseif launch and not prev_launch then
-        stage = 2 --launch/ascent state
+    elseif launch then
+        stage = 4 --launch/ascent state
         stagename = "LNCH"
     elseif ra < 2 then
         stage = 1 --ground state
         stagename = "GRND"
-    else
-        stage = 2
-        stagename = "LNCH"
     end
-    prev_launch = launch
 
 
     -- THROTTLE SUBPROCESS
     if stage == 0 or stage == 1 then --test stage/ground stage
         sp = 0 
-    elseif stage == 2 then --climb/ascent
+    elseif stage == 4 then --climb/ascent
         sp = 1000 
-    elseif stage == 4 or stage == 3 then --descent
+    elseif stage == 3 or stage == 2 then --descent
         sp = -500
     end
 
-    thr = PIDthr(sp, v_spd, 5, 0, 2)
+    thr = PIDthr(sp, v_spd, 5, 0, 0.5)
     thr = clamp(thr, 0, 1)
     -- TVC SUBPROCESS
     SP_Xr = 0 -- x rotation setpoint
@@ -166,8 +164,8 @@ function onTick()
     output.setNumber(24, servo_dx)
     output.setNumber(25, servo_dz)
     output.setNumber(31, stage)
-    output.setBool(1, test)
-    output.setBool(2, launch)
+    output.setBool(1, launch)
+    output.setBool(2, lnch_ctrl)
     -- PROCESSED DATA OUT
     output.setNumber(26, tvc_x)
     output.setNumber(27, tvc_z)

@@ -27,8 +27,7 @@ function onTick()
     tvc_z_inv = input.getNumber(29)
     thr = input.getNumber(30)
     stage = input.getNumber(31)
-    test = input.getBool(1)
-    launch = input.getBool(2)
+    launch = input.getBool(1)
 
     Ex = 0 - PV_Xr
     Ez = 0 - PV_Zr
@@ -75,5 +74,9 @@ function onDraw() --one monitor block is 32x32
     screen.drawText(5, 45, "VSPD: " .. string.format("%.0f", v_spd) .. "FPM")
 
     screen.drawText(5, 53, "RA: " .. string.format("%.1f", ra) .. "M")
-    screen.drawText(64, 53, "BARO: " .. string.format("%.0f", yGPS) .. "M")
+    screen.drawText(64, 53, "BARO: " .. string.format("%.0f", yGPS-9) .. "M")
+
+    -- ALT GRAPH
+    screen.drawRect(138, 15, 20, 70)
+    screen.drawRectF(139, 85, 19, math.abs(yGPS-9/70))
 end
