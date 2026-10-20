@@ -26,6 +26,7 @@ function onTick()
     tvc_x_inv = input.getNumber(28)
     tvc_z_inv = input.getNumber(29)
     thr = input.getNumber(30)
+    stage = input.getNumber(31)
     test = input.getBool(1)
     launch = input.getBool(2)
 

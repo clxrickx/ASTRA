@@ -169,6 +169,7 @@ function onTick()
     output.setNumber(23, servo_z)
     output.setNumber(24, servo_dx)
     output.setNumber(25, servo_dz)
+    output.setNumber(31, stage)
     output.setBool(1, test)
     output.setBool(2, launch)
     -- PROCESSED DATA OUT
