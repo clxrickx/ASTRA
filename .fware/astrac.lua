@@ -5,7 +5,6 @@ stage = 1
 sp = 0 --throttle setpoint
 tvc_x = 0 --init guard, no y rotation control needed
 tvc_z = 0
-comp = false
 FFpS = 0 --fuel flow per second
 BUpS = 0 --battery discharge per second
 
@@ -124,12 +123,6 @@ function onTick()
     thr = PIDthr(sp, yV_lin, 10, 0, 0)
     thr = clamp(thr, 0, 1)
 
-    if thr > 0 then
-        combustion = true -- turn compressor on if throttle is greater than 0(e.g. it's active)
-    else
-        combustion = false
-    end
-
     -- TVC SUBPROCESS
     SP_Xr = 0 -- x rotation setpoint
     SP_Zr = 0 -- z rotation setpoint
@@ -183,5 +176,4 @@ function onTick()
     output.setNumber(26, -tvc_x)
     output.setNumber(27, -tvc_z)
     output.setNumber(28, thr)
-    output.setBool(3, combustion)
 end
