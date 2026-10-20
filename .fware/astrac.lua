@@ -28,7 +28,7 @@ function PIDthr(setpoint, pv, Kp, Ki, Kd)
     return Pt + (It * Ki) + Dthr
 end
 function PIDx(setpoint, pv, Kp, Ki, Kd)
-    ex = (setpoint - pv + math.pi / 2) % math.pi - math.pi / 2
+    ex = (setpoint - pv)
     Px = ex * Kp
     Ix = Ix + ex * dt
     Dx = (ex - prev_errorx) / dt * Kd
@@ -37,7 +37,7 @@ function PIDx(setpoint, pv, Kp, Ki, Kd)
     return Px + (Ix * Ki) + Dx
 end
 function PIDz(setpoint, pv, Kp, Ki, Kd)
-    ez = (setpoint - pv + math.pi / 2) % math.pi - math.pi / 2
+    ez = (setpoint - pv)
     Pz = ez * Kp
     Iz = Iz + ez * dt
     Dz = (ez - prev_errorz) / dt * Kd
@@ -125,9 +125,9 @@ function onTick()
     thr = clamp(thr, 0, 1)
 
     if thr > 0 then
-        comp = true -- turn compressor on if throttle is greater than 0(e.g. it's active)
+        combustion = true -- turn compressor on if throttle is greater than 0(e.g. it's active)
     else
-        comp = false
+        combustion = false
     end
 
     -- TVC SUBPROCESS
@@ -183,5 +183,5 @@ function onTick()
     output.setNumber(26, -tvc_x)
     output.setNumber(27, -tvc_z)
     output.setNumber(28, thr)
-    output.setBool(3, comp)
+    output.setBool(3, combustion)
 end
