@@ -7,8 +7,10 @@ tvc_x = 0 --init guard, no y rotation control needed
 tvc_z = 0
 prev_fuel = 0
 prev_bat = 0
+prev_alt = 0
 FFpS = 0 --fuel flow per second
 BUpS = 0 --battery discharge per second
+v_spd = 0
 
 -- PID LOCALS
 It = 0
@@ -80,18 +82,20 @@ function onTick()
     servo_x = input.getNumber(21) -- actual x "servo[piston]" position
     servo_z = input.getNumber(22) -- actual z "servo[piston]" position
 
+    v_spd = yGPS - prev_alt
+    prev_alt = yGPS
     -- STAGE SUBPROCESS
     if test then
         stage = 0 --test state
         stagename = "TEST"
-    elseif ra > 300 then
+    elseif yGPS > 400 then
         stage = 3 --coast/apogee state
         stagename = "APOG"
-    elseif (ra > 50 and yV_lin < 0) or yV_lin < -10 then
+    elseif yGPS > 200 and v_spd < 0 then
         stage = 4 --descent state
         stagename = "DESC"
         launched = false
-    elseif ra >= 2 and ra <= 50 and yV_lin < 0 then
+    elseif ra >= 2 and yGPS <= 50 and v_spd < 0 then
         stage = 5 --landing state
         stagename = "LAND"
     elseif launch and not prev_launch then
@@ -113,16 +117,16 @@ function onTick()
     if stage == 0 or stage == 1 then --test stage/ground stage
         sp = 0 
     elseif stage == 2 then --climb/ascent
-        sp = 30 
+        sp = 40 
     elseif stage == 3 then --coast/apogee
-        sp = -1000 --ensures no power
+        sp = 0 --ensures no power
     elseif stage == 4 then --descent
-        sp = -20
+        sp = 0
     elseif stage == 5 then --landing
-        sp = -5
+        sp = 0
     end
 
-    thr = PIDthr(sp, yV_lin, 20, 0, 2)
+    thr = PIDthr(sp, absV_lin, 20, 0, 2)
     thr = clamp(thr, 0, 1)
     -- TVC SUBPROCESS
     SP_Xr = 0 -- x rotation setpoint
@@ -147,12 +151,13 @@ function onTick()
 
     servo_dx = servo_x - tvc_x
     servo_dz = servo_z - tvc_z
+
     -- COMP OUT WRITE (to radio transmitter)
     output.setNumber(1, xGPS)
     output.setNumber(2, yGPS)
     output.setNumber(3, zGPS) -- check if we have a barometer in SW
     output.setNumber(7, xV_lin)
-    output.setNumber(8, yV_lin)
+    output.setNumber(8, v_spd)
     output.setNumber(9, zV_lin)
     output.setNumber(10, xV_ang)
     output.setNumber(11, yV_ang)

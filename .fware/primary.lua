@@ -4,7 +4,7 @@ function onTick()
     yGPS = input.getNumber(2)
     zGPS = input.getNumber(3) -- check if we have a barometer in SW
     xV_lin = input.getNumber(7)
-    yV_lin = input.getNumber(8)
+    v_spd = input.getNumber(8)
     zV_lin = input.getNumber(9)
     xV_ang = input.getNumber(10)
     yV_ang = input.getNumber(11)
@@ -34,9 +34,9 @@ function onTick()
     Ez = 0 - PV_Zr
 
     status = 0 --warning var for screen, 0 = all good, 1 = caution, 2 = warning
-    if (fuel * FFpS) < 20 then
+    if fuel < 50 then
         status = 1
-    elseif (fuel * FFpS) < 5 then
+    elseif fuel < 15 then
         status = 2
     elseif bat < 0.3 then
         status = 1
@@ -58,21 +58,22 @@ function onDraw() --one monitor block is 32x32
     screen.setColor(255, 255, 255)
     screen.drawText(1, 1, "STAGE " .. stage)
     -- TVC
-    screen.drawText(5, 15, "Ex: " .. string.format("%.1f", Ex * 100))
-    screen.drawText(64, 15, "Ez: " .. string.format("%.1f", Ez * 100))
+    screen.drawText(5, 15, "Ex: " .. string.format("%.1f", Ex * 10))
+    screen.drawText(64, 15, "Ez: " .. string.format("%.1f", Ez * 10))
 
-    screen.drawText(5, 25, "TVC X: " .. string.format("%.1f", tvc_x * 100))
-    screen.drawText(64, 25, "TVC Z: " .. string.format("%.1f", tvc_z * 100))
+    screen.drawText(5, 25, "TVCx: " .. string.format("%.1f", tvc_x * 10))
+    screen.drawText(64, 25, "TVCz: " .. string.format("%.1f", tvc_z * 10))
 
-    screen.drawText(5, 35, "TVC_Dx: " .. string.format("%.1f", servo_dx * 100))
-    screen.drawText(64, 35, "TVC_Dz: " .. string.format("%.1f", servo_dz * 100))
+    screen.drawText(5, 35, "TVCDx: " .. string.format("%.1f", servo_dx * 10))
+    screen.drawText(64, 35, "TVCDz: " .. string.format("%.1f", servo_dz * 10))
 
-    screen.drawText(5, 45, "PVx: " .. string.format("%.1f", PV_Xr * 100))
-    screen.drawText(64, 45, "PVx: " .. string.format("%.1f", PV_Zr * 100))
+    screen.drawText(5, 45, "PVx: " .. string.format("%.1f", PV_Xr * 10))
+    screen.drawText(64, 45, "PVx: " .. string.format("%.1f", PV_Zr * 10))
 
     --SPD/ALT
-    screen.drawText(5, 65, "LINv: " .. string.format("%.1f", absV_lin))
+    screen.drawText(5, 65, "VSPD: " .. string.format("%.1f", v_spd))
     screen.drawText(64, 65, "ANGv: " .. string.format("%.1f", absV_ang)) 
 
     screen.drawText(5, 75, "RA: " .. string.format("%.1f", ra) .. "M")
+    screen.drawText(64, 75, "BARO: " .. string.format("%.0f", yGPS))
 end
