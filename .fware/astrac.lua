@@ -84,6 +84,7 @@ function onTick()
 
     v_spd = (yGPS - prev_alt) * 3600
     prev_alt = yGPS
+
     -- STAGE SUBPROCESS
     if test then
         stage = 0 --test state
@@ -91,21 +92,15 @@ function onTick()
     elseif yGPS > 200 then
         stage = 3 --coast/apogee state
         stagename = "APOG"
-    elseif yGPS > 20 and v_spd < 300 then
+    elseif yGPS > 12 and v_spd < 10 then
         stage = 4 --descent state
         stagename = "DESC"
-        launched = false
-    elseif yGPS >= 20 and yGPS <= 50 and v_spd < 300 then
-        stage = 5 --landing state
-        stagename = "LAND"
     elseif launch and not prev_launch then
         stage = 2 --launch/ascent state
         stagename = "LNCH"
-        launched = true
-    elseif ra < 2 and not launched then -- 2 = 8 units
+    elseif ra < 2 then
         stage = 1 --ground state
         stagename = "GRND"
-        launched = false
     else
         stage = 2
         stagename = "LNCH"
@@ -120,8 +115,6 @@ function onTick()
         sp = 1000 
     elseif stage == 4 or stage == 3 then --descent
         sp = -500
-    elseif stage == 5 then --landing
-        sp = -250
     end
 
     thr = PIDthr(sp, v_spd, 5, 0, 2)
@@ -141,10 +134,10 @@ function onTick()
     end
 
     -- ADDITIONAL TELEMETRY CALCULATIONS
-    FFpS = fuel - prev_fuel * 60
+    FFpS = (fuel - prev_fuel) * 60
     prev_fuel = fuel
 
-    BUpS = bat - prev_bat * 60
+    BUpS = (bat - prev_bat) * 60
     prev_bat = bat
 
     servo_dx = servo_x - tvc_x
