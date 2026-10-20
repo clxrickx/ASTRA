@@ -91,18 +91,23 @@ function onTick()
     -- STAGE SUBPROCESS
     launch_edge = launch and not prev_launch
     prev_launch = launch
+    landing_inhibit = false
 
     if alt > 200 then
         stage = 3 --coast/apogee state
         stagename = "APOG"
-    elseif alt > 10 and v_spd < 10 then
+    elseif alt > 20 and v_spd < 10 then
         stage = 2 --descent state
         stagename = "DESC"
+        launch_armed = false
+    elseif alt < 20 and ra > 4 and v_spd < 10 then
+        stage = 1
+        stagename = "LAND"
     elseif stage == 4 then
         stage = 4
         stagename = "LNCH"
     elseif ra < 1 then
-        stage = 1 --ground state
+        stage = 0 --ground state
         stagename = "GRND"
         if launch then
             launch_armed = true
@@ -112,30 +117,38 @@ function onTick()
             stagename = "LNCH"
             launch_armed = true
         end
+    elseif ra < 4 and not launch_armed then
+        landing_inhibit = true
     end
 
 
     -- THROTTLE SUBPROCESS
-    if stage == 1 then --test stage/ground stage
+    if stage == 0 then --test stage/ground stage
         sp = 0 
     elseif stage == 4 then --climb/ascent
         sp = 1000 
     elseif stage == 3 or stage == 2 then --descent
-        sp = -500
+        sp = -750
+    elseif stage == 1 then
+        if sp < -250 then
+            sp = sp + 6
+        else
+            sp = -250
+        end
     end
 
-    thr = PIDthr(sp, v_spd, 5, 0, 0.5)
+    thr = PIDthr(sp, v_spd, 3, 0, 0.5)
     thr = clamp(thr, 0, 1)
     -- TVC SUBPROCESS
     SP_Xr = 0 -- x rotation setpoint
     SP_Zr = 0 -- z rotation setpoint
 
-    if stage == 1 then
+    if stage == 0 then
         tvc_x, tvc_z, ex, ez = 0, 0, 0, 0 --tvcs neutral on ground
         Ix, Iz, prev_errorx, prev_errorz = 0, 0, 0, 0 --prevent integral windup and derivative kick
     else
-        tvc_x = PIDx(SP_Xr, PV_Xr, 20, 0, 1.5)
-        tvc_z = PIDz(SP_Zr, PV_Zr, 20, 0, 1.5)
+        tvc_x = PIDx(SP_Xr, PV_Xr, 20, 0, 2)
+        tvc_z = PIDz(SP_Zr, PV_Zr, 20, 0, 2)
         tvc_x = clamp(tvc_x, -0.5, 0.5)
         tvc_z = clamp(tvc_z, -0.5, 0.5)
     end
@@ -150,6 +163,10 @@ function onTick()
     servo_dx = servo_x - tvc_x
     servo_dz = servo_z - tvc_z
 
+    -- LANDING INHIBIT
+    if landing_inhibit then
+        tvc_x, tvc_z, thr = 0, 0, 0
+    end
     -- COMP OUT WRITE (to radio transmitter)
     output.setNumber(1, xGPS)
     output.setNumber(2, yGPS)
@@ -174,7 +191,6 @@ function onTick()
     output.setNumber(25, servo_dz)
     output.setNumber(31, stage)
     output.setBool(1, launch)
-    output.setBool(2, lnch_ctrl)
     -- PROCESSED DATA OUT
     output.setNumber(26, tvc_x)
     output.setNumber(27, tvc_z)

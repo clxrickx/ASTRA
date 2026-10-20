@@ -58,8 +58,8 @@ function onDraw() --one monitor block is 32x32
     screen.drawText(5, 3, "STAGE " .. string.format("%.0f", stage))
     screen.setColor(255, 255, 255)
     -- TVC
-    screen.drawText(5, 13, "Ex: " .. string.format("%.1f", Ex * 10))
-    screen.drawText(64, 13, "Ez: " .. string.format("%.1f", Ez * 10))
+    screen.drawText(5, 13, "Ex: " .. string.format("%.1f", Ex * 100))
+    screen.drawText(64, 13, "Ez: " .. string.format("%.1f", Ez * 100))
 
     screen.drawText(5, 21, "TVCx: " .. string.format("%.1f", tvc_x * 10))
     screen.drawText(64, 21, "TVCz: " .. string.format("%.1f", tvc_z * 10))
@@ -78,5 +78,10 @@ function onDraw() --one monitor block is 32x32
 
     -- ALT GRAPH
     screen.drawRect(138, 15, 20, 70)
-    screen.drawRectF(139, 85, 19, -math.abs(yGPS-9/70))
+    screen.drawRectF(139, 85, 19, -(yGPS-9)/250 * 70)
+
+    --THR GRAPH
+    screen.drawRect(130, 15, 5, 70)
+    screen.setColor(255, 0, 0)
+    screen.drawRectF(131, 85, 4, -thr * 70)
 end
