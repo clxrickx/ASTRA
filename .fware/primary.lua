@@ -28,10 +28,50 @@ function onTick()
     thr = input.getNumber(30)
     test = input.getBool(1)
     launch = input.getBool(2)
+
+    Ex = 0 - PV_Xr
+    Ez = 0 - PV_Zr
+
+    status = 0 --warning var for screen, 0 = all good, 1 = caution, 2 = warning
+    if (fuel * FFpS) < 20 then
+        status = 1
+    elseif (fuel * FFpS) < 5 then
+        status = 2
+    elseif bat < 0.3 then
+        status = 1
+    elseif bat < 0.1 then
+        status = 2
+    end
 end
 
-function onDraw()
+function onDraw() --one monitor block is 32x32
+    -- MAIN STATUS
+    if status == 0 then
+        screen.setColor(255, 255, 255)
+    elseif status == 1 then
+        screen.setColor(128, 0, 128)
+    elseif status == 2 then
+        screen.setColor(255, 0, 0)
+    end
+    screen.drawRectF(0, 0, 160, 14)
     screen.setColor(255, 255, 255)
+    screen.drawText(1, 1, "STAGE " .. stage)
+    -- TVC
+    screen.drawText(5, 15, "Ex: " .. string.format("%.1f", Ex * 100))
+    screen.drawText(64, 15, "Ez: " .. string.format("%.1f", Ez * 100))
 
-    --
+    screen.drawText(5, 25, "TVC X: " .. string.format("%.1f", tvc_x * 100))
+    screen.drawText(64, 25, "TVC Z: " .. string.format("%.1f", tvc_z * 100))
+
+    screen.drawText(5, 35, "TVC_Dx: " .. string.format("%.1f", servo_dx * 100))
+    screen.drawText(64, 35, "TVC_Dz: " .. string.format("%.1f", servo_dz * 100))
+
+    screen.drawText(5, 45, "PVx: " .. string.format("%.1f", PV_Xr * 100))
+    screen.drawText(64, 45, "PVx: " .. string.format("%.1f", PV_Zr * 100))
+
+    --SPD/ALT
+    screen.drawText(5, 65, "LINv: " .. string.format("%.1f", absV_lin))
+    screen.drawText(64, 65, "ANGv: " .. string.format("%.1f", absV_ang)) 
+
+    screen.drawText(5, 75, "RA: " .. string.format("%.1f", ra) .. "M")
 end
