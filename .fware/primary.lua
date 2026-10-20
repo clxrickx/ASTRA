@@ -78,5 +78,5 @@ function onDraw() --one monitor block is 32x32
 
     -- ALT GRAPH
     screen.drawRect(138, 15, 20, 70)
-    screen.drawRectF(139, 85, 19, math.abs(yGPS-9/70))
+    screen.drawRectF(139, 85, 19, -math.abs(yGPS-9/70))
 end

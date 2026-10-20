@@ -97,26 +97,26 @@ function onTick()
     elseif yGPS > 12 and v_spd < 10 then
         stage = 2 --descent state
         stagename = "DESC"
-    elseif ra < 2 then
-        stage = 1 --ground state
-        stagename = "GRND"
-        if not launch then
-            launch_armed = false
-        end
-    elseif stage == 1 and launch_edge and launch_armed then
+    elseif launch_edge and launch_armed then
         stage = 4
         stagename = "LNCH"
         launch_armed = true
     elseif stage == 4 then
         stage = 4
         stagename = "LNCH"
+    elseif ra < 2 then
+        stage = 1 --ground state
+        stagename = "GRND"
+        if launch then
+            launch_armed = true
+        end
     else
         stage = 2
     end
 
 
     -- THROTTLE SUBPROCESS
-    if stage == 0 or stage == 1 then --test stage/ground stage
+    if stage == 1 then --test stage/ground stage
         sp = 0 
     elseif stage == 4 then --climb/ascent
         sp = 1000 
