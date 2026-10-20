@@ -1,10 +1,13 @@
 -- GLOBALS/INIT GUARDS
 dt = 1/60 -- 60hz tick rate
+
 stage = 1
 sp = 0 --throttle setpoint
 tvc_x = 0 --init guard, no y rotation control needed
 tvc_z = 0
 comp = false
+FFpS = 0 --fuel flow per second
+BUpS = 0 --battery discharge per second
 
 -- PID LOCALS
 It = 0
@@ -141,8 +144,15 @@ function onTick()
         tvc_z = clamp(tvc_z, -0.5, 0.5)
     end
 
+    -- ADDITIONAL TELEMETRY CALCULATIONS
+    FFpS = fuel - prev_fuel * 60
+    prev_fuel = fuel
 
+    BUpS = bat - prev_bat * 60
+    prev_bat = bat
 
+    servo_dx = servo_x - tvc_x
+    servo_dz = servo_z - tvc_z
     -- COMP OUT WRITE (to radio transmitter)
     output.setNumber(1, xGPS)
     output.setNumber(2, yGPS)
@@ -159,16 +169,19 @@ function onTick()
     output.setNumber(16, PV_Xr)
     output.setNumber(18, ra)
     output.setNumber(19, fuel)
-    output.setNumber(20, bat)
-    output.setNumber(21, servo_x)
-    output.setNumber(22, servo_z)
+    output.setNumber(20, FFpS)
+    output.setNumber(21, bat)
+    output.setNumber(22, servo_x)
+    output.setNumber(23, servo_z)
+    output.setNumber(24, servo_dx)
+    output.setNumber(25, servo_dz)
     output.setBool(1, test)
     output.setBool(2, launch)
     -- PROCESSED DATA OUT
-    output.setNumber(1, tvc_x)
-    output.setNumber(2, tvc_z)
-    output.setNumber(3, -tvc_x)
-    output.setNumber(4, -tvc_z)
-    output.setNumber(5, thr)
-    output.setBool(1, comp)
+    output.setNumber(24, tvc_x)
+    output.setNumber(25, tvc_z)
+    output.setNumber(26, -tvc_x)
+    output.setNumber(27, -tvc_z)
+    output.setNumber(28, thr)
+    output.setBool(3, comp)
 end
