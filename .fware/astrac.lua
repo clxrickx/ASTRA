@@ -5,6 +5,8 @@ stage = 1
 sp = 0 --throttle setpoint
 tvc_x = 0 --init guard, no y rotation control needed
 tvc_z = 0
+prev_fuel = 0
+prev_bat = 0
 FFpS = 0 --fuel flow per second
 BUpS = 0 --battery discharge per second
 
@@ -111,16 +113,16 @@ function onTick()
     if stage == 0 or stage == 1 then --test stage/ground stage
         sp = 0 
     elseif stage == 2 then --climb/ascent
-        sp = 5 
+        sp = 20 
     elseif stage == 3 then --coast/apogee
         sp = 0
     elseif stage == 4 then --descent
-        sp = -3
+        sp = -10
     elseif stage == 5 then --landing
-        sp = -1
+        sp = -5
     end
 
-    thr = PIDthr(sp, yV_lin, 10, 0, 0)
+    thr = PIDthr(sp, yV_lin, 20, 0, 1)
     thr = clamp(thr, 0, 1)
 
     -- TVC SUBPROCESS
@@ -131,8 +133,8 @@ function onTick()
         tvc_x, tvc_z, ex, ez = 0, 0, 0, 0 --tvcs neutral on ground
         Ix, Iz, prev_errorx, prev_errorz = 0, 0, 0, 0 --prevent integral windup and derivative kick
     else
-        tvc_x = PIDx(SP_Xr, PV_Xr, 4, 0, 0)
-        tvc_z = PIDz(SP_Zr, PV_Zr, 4, 0, 0)
+        tvc_x = PIDx(SP_Xr, PV_Xr, 10, 0, 0)
+        tvc_z = PIDz(SP_Zr, PV_Zr, 10, 0, 0)
         tvc_x = clamp(tvc_x, -0.5, 0.5)
         tvc_z = clamp(tvc_z, -0.5, 0.5)
     end
@@ -176,4 +178,9 @@ function onTick()
     output.setNumber(26, -tvc_x)
     output.setNumber(27, -tvc_z)
     output.setNumber(28, thr)
+end
+
+function onDraw()
+    screen.drawText(5, 5,"S"..stage)
+    screen.drawText(5, 15, stagename)
 end
