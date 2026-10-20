@@ -88,14 +88,14 @@ function onTick()
     if test then
         stage = 0 --test state
         stagename = "TEST"
-    elseif yGPS > 400 then
+    elseif yGPS > 200 then
         stage = 3 --coast/apogee state
         stagename = "APOG"
-    elseif yGPS > 200 and v_spd < 300 then
+    elseif yGPS > 20 and v_spd < 300 then
         stage = 4 --descent state
         stagename = "DESC"
         launched = false
-    elseif ra >= 2 and yGPS <= 50 and v_spd < 300 then
+    elseif yGPS >= 20 and yGPS <= 50 and v_spd < 300 then
         stage = 5 --landing state
         stagename = "LAND"
     elseif launch and not prev_launch then
@@ -117,14 +117,14 @@ function onTick()
     if stage == 0 or stage == 1 then --test stage/ground stage
         sp = 0 
     elseif stage == 2 then --climb/ascent
-        sp = 2500 
+        sp = 1000 
     elseif stage == 4 or stage == 3 then --descent
-        sp = -1000
+        sp = -500
     elseif stage == 5 then --landing
         sp = -250
     end
 
-    thr = PIDthr(sp, v_spd, 30, 0.1, 3)
+    thr = PIDthr(sp, v_spd, 5, 0, 2)
     thr = clamp(thr, 0, 1)
     -- TVC SUBPROCESS
     SP_Xr = 0 -- x rotation setpoint

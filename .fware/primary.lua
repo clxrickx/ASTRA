@@ -54,7 +54,7 @@ function onDraw() --one monitor block is 32x32
     elseif status == 2 then
         screen.setColor(255, 0, 0)
     end
-    screen.drawRectF(0, 0, 160, 13)
+    screen.drawRectF(0, 0, 160, 11)
     screen.setColor(0, 0, 0)
     screen.drawText(5, 3, "STAGE " .. string.format("%.0f", stage))
     screen.setColor(255, 255, 255)
@@ -75,5 +75,5 @@ function onDraw() --one monitor block is 32x32
     screen.drawText(5, 45, "VSPD: " .. string.format("%.0f", v_spd) .. "FPM")
 
     screen.drawText(5, 53, "RA: " .. string.format("%.1f", ra) .. "M")
-    screen.drawText(64, 53, "BARO: " .. string.format("%.0f", yGPS))
+    screen.drawText(64, 53, "BARO: " .. string.format("%.0f", yGPS) .. "M")
 end
