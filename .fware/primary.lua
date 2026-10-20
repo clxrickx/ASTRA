@@ -50,30 +50,30 @@ function onDraw() --one monitor block is 32x32
     if status == 0 then
         screen.setColor(255, 255, 255)
     elseif status == 1 then
-        screen.setColor(128, 0, 128)
+        screen.setColor(255, 255, 0)
     elseif status == 2 then
         screen.setColor(255, 0, 0)
     end
-    screen.drawRectF(0, 0, 160, 14)
+    screen.drawRectF(0, 0, 160, 13)
+    screen.setColor(0, 0, 0)
+    screen.drawText(5, 3, "STAGE " .. string.format("%.0f", stage))
     screen.setColor(255, 255, 255)
-    screen.drawText(1, 1, "STAGE " .. stage)
     -- TVC
-    screen.drawText(5, 15, "Ex: " .. string.format("%.1f", Ex * 10))
-    screen.drawText(64, 15, "Ez: " .. string.format("%.1f", Ez * 10))
+    screen.drawText(5, 13, "Ex: " .. string.format("%.1f", Ex * 10))
+    screen.drawText(64, 13, "Ez: " .. string.format("%.1f", Ez * 10))
 
-    screen.drawText(5, 25, "TVCx: " .. string.format("%.1f", tvc_x * 10))
-    screen.drawText(64, 25, "TVCz: " .. string.format("%.1f", tvc_z * 10))
+    screen.drawText(5, 21, "TVCx: " .. string.format("%.1f", tvc_x * 10))
+    screen.drawText(64, 21, "TVCz: " .. string.format("%.1f", tvc_z * 10))
 
-    screen.drawText(5, 35, "TVCDx: " .. string.format("%.1f", servo_dx * 10))
-    screen.drawText(64, 35, "TVCDz: " .. string.format("%.1f", servo_dz * 10))
+    screen.drawText(5, 29, "TVCDx: " .. string.format("%.1f", servo_dx * 10))
+    screen.drawText(64, 29, "TVCDz: " .. string.format("%.1f", servo_dz * 10))
 
-    screen.drawText(5, 45, "PVx: " .. string.format("%.1f", PV_Xr * 10))
-    screen.drawText(64, 45, "PVx: " .. string.format("%.1f", PV_Zr * 10))
+    screen.drawText(5, 37, "PVx: " .. string.format("%.1f", PV_Xr * 10))
+    screen.drawText(64, 37, "PVx: " .. string.format("%.1f", PV_Zr * 10))
 
     --SPD/ALT
-    screen.drawText(5, 65, "VSPD: " .. string.format("%.1f", v_spd))
-    screen.drawText(64, 65, "ANGv: " .. string.format("%.1f", absV_ang)) 
+    screen.drawText(5, 45, "VSPD: " .. string.format("%.0f", v_spd) .. "FPM")
 
-    screen.drawText(5, 75, "RA: " .. string.format("%.1f", ra) .. "M")
-    screen.drawText(64, 75, "BARO: " .. string.format("%.0f", yGPS))
+    screen.drawText(5, 53, "RA: " .. string.format("%.1f", ra) .. "M")
+    screen.drawText(64, 53, "BARO: " .. string.format("%.0f", yGPS))
 end
