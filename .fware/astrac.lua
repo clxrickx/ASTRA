@@ -113,18 +113,17 @@ function onTick()
     if stage == 0 or stage == 1 then --test stage/ground stage
         sp = 0 
     elseif stage == 2 then --climb/ascent
-        sp = 20 
+        sp = 30 
     elseif stage == 3 then --coast/apogee
-        sp = 0
+        sp = -1000 --ensures no power
     elseif stage == 4 then --descent
-        sp = -10
+        sp = -20
     elseif stage == 5 then --landing
         sp = -5
     end
 
-    thr = PIDthr(sp, yV_lin, 20, 0, 1)
+    thr = PIDthr(sp, yV_lin, 20, 0, 2)
     thr = clamp(thr, 0, 1)
-
     -- TVC SUBPROCESS
     SP_Xr = 0 -- x rotation setpoint
     SP_Zr = 0 -- z rotation setpoint
@@ -133,8 +132,8 @@ function onTick()
         tvc_x, tvc_z, ex, ez = 0, 0, 0, 0 --tvcs neutral on ground
         Ix, Iz, prev_errorx, prev_errorz = 0, 0, 0, 0 --prevent integral windup and derivative kick
     else
-        tvc_x = PIDx(SP_Xr, PV_Xr, 10, 0, 0)
-        tvc_z = PIDz(SP_Zr, PV_Zr, 10, 0, 0)
+        tvc_x = PIDx(SP_Xr, PV_Xr, 20, 0, 1.5)
+        tvc_z = PIDz(SP_Zr, PV_Zr, 20, 0, 1.5)
         tvc_x = clamp(tvc_x, -0.5, 0.5)
         tvc_z = clamp(tvc_z, -0.5, 0.5)
     end
