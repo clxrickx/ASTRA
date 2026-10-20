@@ -86,32 +86,32 @@ function onTick()
     v_spd = (yGPS - prev_alt) * 3600
     prev_alt = yGPS
 
+    alt = yGPS-9
+
     -- STAGE SUBPROCESS
     launch_edge = launch and not prev_launch
     prev_launch = launch
 
-    if yGPS > 200 then
+    if alt > 200 then
         stage = 3 --coast/apogee state
         stagename = "APOG"
-        lnch_ctrl = false
-    elseif yGPS > 12 and v_spd < 10 then
+    elseif alt > 10 and v_spd < 10 then
         stage = 2 --descent state
         stagename = "DESC"
-    elseif launch_edge and launch_armed then
-        stage = 4
-        stagename = "LNCH"
-        launch_armed = true
     elseif stage == 4 then
         stage = 4
         stagename = "LNCH"
-    elseif ra < 2 then
+    elseif ra < 1 then
         stage = 1 --ground state
         stagename = "GRND"
         if launch then
             launch_armed = true
         end
-    else
-        stage = 2
+        if launch_edge and launch_armed then
+            stage = 4
+            stagename = "LNCH"
+            launch_armed = true
+        end
     end
 
 
