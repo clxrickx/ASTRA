@@ -1,3 +1,7 @@
+function clamp(v, lo, hi)
+    return math.max(lo, math.min(hi, v))
+end
+
 function onTick()
     -- Get/assign composite data to variables.
     xGPS =input.getNumber(1)
@@ -27,6 +31,7 @@ function onTick()
     tvc_z_inv = input.getNumber(29)
     thr = input.getNumber(30)
     stage = input.getNumber(31)
+    BUpS = input.getNumber(32)
     launch = input.getBool(1)
 
     Ex = 0 - PV_Xr
@@ -72,16 +77,22 @@ function onDraw() --one monitor block is 32x32
 
     --SPD/ALT
     screen.drawText(5, 45, "VSPD: " .. string.format("%.0f", v_spd) .. "FPM")
-
     screen.drawText(5, 53, "RA: " .. string.format("%.1f", ra) .. "M")
     screen.drawText(64, 53, "BARO: " .. string.format("%.0f", yGPS-9) .. "M")
 
+    -- EXT TELEMETRY
+    screen.drawText(5, 61, "BAT: " .. string.format("%.0f", bat * 100) .. "%")
+    screen.drawText(64, 61, "BUpS: " .. string.format("%.0f", BUpS * 100) .. "%/s")
+
+    screen.drawText(5, 69, "FOB: " .. string.format("%.0f", fuel) .. "L")
+    screen.drawText(64, 69, "FFpS: " .. string.format("%.1f", FFpS) .. "L/s")
     -- ALT GRAPH
     screen.drawRect(138, 15, 20, 70)
-    screen.drawRectF(139, 85, 19, -(yGPS-9)/250 * 70)
+    screen.drawRectF(139, 85, 19, -clamp((yGPS-9), 0, 50)/50 * 70)
+    screen.drawText(138, 88, "0-50")
 
     --THR GRAPH
     screen.drawRect(130, 15, 5, 70)
     screen.setColor(255, 0, 0)
-    screen.drawRectF(131, 85, 4, -thr * 70)
+    screen.drawRectF(131, 85, 4, -thr * 69)
 end
