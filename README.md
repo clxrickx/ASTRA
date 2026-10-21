@@ -14,8 +14,3 @@ The TVC controller loop takes control of the TVC mounts and servos, which are th
 
 ### **Throttle Controller:**
 The throttle controller loop controls the throttle input into the jet's combustion chamber, and uses the stage output from the main controller to set vertical speed setpoints, which is also taken from the main controller. The throttle controller, like the TVC controller, uses a PID controller to control the throttle.
-
-# ADDITIONAL SYSTEMS(OPT):
-
-### **base.xxx**
-The ```base``` prefix on files signifies that the attached file is for the base station. The base station recieves telemetry from the rocket through a high-range antenna which projects all written composite values from ```astrac.lua``` to the base station, where it is then projected onto two screens(which are powered by scripts primary.lua and secondary.lua, repectively).
