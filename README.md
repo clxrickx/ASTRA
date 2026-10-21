@@ -15,6 +15,18 @@ The TVC controller loop takes control of the TVC mounts and servos, which are th
 ### **Throttle Controller:**
 The throttle controller loop controls the throttle input into the jet's combustion chamber, and uses the stage output from the main controller to set vertical speed setpoints, which is also taken from the main controller. The throttle controller, like the TVC controller, uses a PID controller to control the throttle.
 
+## TUNING
+Tuning ASTRAC to your own TVC rocket is rather simple if you can read some basic code. There are and will not be a huge list of variables at the top of ASTRAC.lua with all the tunable parameters. It is up to you to see where parameters should be changed and what parameters should not. If you need help, reach out. Please note that all parameters are currently tuned to ASTRA, and you will probably need to tune everything for your own rocket.
+
+### PID Tuning
+ASTRAC hosts three PID loops, one for the throttle and two for each axis/DoF of the TVC(x and z axes). The argument for each is ```(setpoint, processed_variable, Kp, Ki, Kd)```. You should not touch ```setpoint``` or ```processed_variable``` unless you know what you are doing. Kp, Ki, and Kd are the constants for the proportional term, integral term, and derivative term.
+
+### Target Altitude/Stages
+ASTRAC computes target altitudes through the staging system. By changing the arugments on when a stage's conditions are met, you can effectively change the length of each stage, and therefore, your maximum altitude, restricted only by your rocket's capabilities. (L96-122)
+
+### Climb/Descent Vertical Speeds
+ASTRAC computes climb and descent thrusts based on a target vertical speed in feet per minute. These values can be changed for each stage. (L126-138)
+
 # ADDITIONAL SYSTEMS(OPT):
 
 ### **base.xxx**
