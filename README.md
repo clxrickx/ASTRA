@@ -2,7 +2,7 @@
 
 # ASTRAC
 ASTRAC(Autonomously Stabilized Thrust-to-Recovery Avionics Computer) is a self-landing stormworks TVC flight computer coded in stormworks Lua.
-Showcase: [https://youtu.be/Ydh8ZOWIW-U]([url](https://youtu.be/Ydh8ZOWIW-U))
+Showcase: [https://youtu.be/Ydh8ZOWIW-U](https://youtu.be/Ydh8ZOWIW-U)
 
 ## ARCHITECTURE
 ASTRAC's architecture consists of one single microcontroller which has three controller loops; one for data processing, and two for throttle and controlling the thrust vector control servos, respectively.
